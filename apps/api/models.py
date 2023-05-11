@@ -10,7 +10,7 @@ class Package(models.Model):
     name = models.CharField(max_length=255)
     weight = models.FloatField()
     price = models.PositiveIntegerField()
-    package_type = models.ForeignKey(models, on_delete=models.PROTECT)
+    package_type = models.ForeignKey(PackageType, on_delete=models.PROTECT)
 
     def __str__(self):
         return self.name
