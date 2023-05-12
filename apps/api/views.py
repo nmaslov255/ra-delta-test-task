@@ -12,8 +12,10 @@ class PackagePagination(PageNumberPagination):
     page_size_query_param = 'page_size'
     max_page_size = 100
 
+
 class PackageCreate(generics.CreateAPIView):
     serializer_class = PackageSerializer
+
 
 class PackageListFilter(generics.ListAPIView):
     serializer_class = PackageSerializer
@@ -24,9 +26,11 @@ class PackageListFilter(generics.ListAPIView):
 
     queryset = Package.objects.all()
 
+
 class PackageDetail(generics.RetrieveAPIView):
     serializer_class = PackageSerializer
     queryset = Package.objects.all()
+
 
 class PackageTypeList(generics.ListAPIView):
     queryset = PackageType.objects.all()

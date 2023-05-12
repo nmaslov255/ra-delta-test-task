@@ -10,6 +10,7 @@ class PackageType(models.Model):
     def __str__(self):
         return self.name
 
+
 class Package(models.Model):
     name = models.CharField(max_length=255, validators=[validate_name])
     weight = models.FloatField(validators=[MinValueValidator(0.1),
