@@ -1,10 +1,13 @@
 from django.shortcuts import render
 from rest_framework import generics
 from rest_framework.pagination import PageNumberPagination
+from rest_framework.decorators import permission_classes
 from django_filters.rest_framework import DjangoFilterBackend
 
 from .models import Package, PackageType
 from .serializers import PackageSerializer, PackageTypeSerializer
+from .permissions import IsSessionOwner
+from .exceptions import SessionNotCreated
 
 
 class PackagePagination(PageNumberPagination):
@@ -24,9 +27,18 @@ class PackageListFilter(generics.ListAPIView):
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['package_type']
 
-    queryset = Package.objects.all()
+    queryset = Package.objects.all().order_by('-pk')
+
+    def filter_queryset(self, queryset):
+        session_key = self.request.session.session_key
+
+        if not session_key:
+            raise SessionNotCreated()
+
+        return self.queryset.filter(owner_session=session_key)
 
 
+@permission_classes([IsSessionOwner])
 class PackageDetail(generics.RetrieveAPIView):
     serializer_class = PackageSerializer
     queryset = Package.objects.all()
