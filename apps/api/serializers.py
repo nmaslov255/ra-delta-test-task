@@ -19,7 +19,7 @@ class PackageSerializer(serializers.ModelSerializer):
 
         read_only_fields = ('delivery_price',)
         fields = ('pk', 'name', 'weight', 'price', 'delivery_price',
-                  'package_type_name')
+                  'package_type', 'package_type_name')
 
     def get_package_type_name(self, obj):
         return obj.package_type.name
