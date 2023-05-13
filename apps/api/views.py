@@ -27,7 +27,8 @@ class PackageListFilter(generics.ListAPIView):
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['package_type']
 
-    queryset = Package.objects.all().order_by('-pk')
+    queryset = Package.objects.prefetch_related('package_type')\
+                              .order_by('-pk')
 
     def filter_queryset(self, queryset):
         session_key = self.request.session.session_key
@@ -41,7 +42,7 @@ class PackageListFilter(generics.ListAPIView):
 @permission_classes([IsSessionOwner])
 class PackageDetail(generics.RetrieveAPIView):
     serializer_class = PackageSerializer
-    queryset = Package.objects.all()
+    queryset = Package.objects.prefetch_related('package_type')
 
 
 class PackageTypeList(generics.ListAPIView):

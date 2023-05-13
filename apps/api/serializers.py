@@ -12,13 +12,17 @@ class PackageTypeSerializer(serializers.ModelSerializer):
 
 
 class PackageSerializer(serializers.ModelSerializer):
+    package_type_name = serializers.SerializerMethodField()
+
     class Meta:
         model = Package
 
         read_only_fields = ('delivery_price',)
         fields = ('pk', 'name', 'weight', 'price', 'delivery_price',
-                  'package_type')
+                  'package_type_name')
 
+    def get_package_type_name(self, obj):
+        return obj.package_type.name
 
     def create(self, validated_data):
         request = self.context.get('request')
