@@ -26,3 +26,9 @@ class PackageSerializer(serializers.ModelSerializer):
 
         validated_data['owner_session'] = session
         return super().create(validated_data)
+
+    def to_representation(self, instance):
+        package = super().to_representation(instance)
+        package['weight_unit'] = 'kg'
+
+        return package
