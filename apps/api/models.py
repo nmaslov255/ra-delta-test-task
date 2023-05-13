@@ -14,9 +14,16 @@ class PackageType(models.Model):
 
 class Package(models.Model):
     name = models.CharField(max_length=255, validators=[validate_name])
-    weight = models.FloatField(validators=[MinValueValidator(0.1),
-                                           MaxValueValidator(1000)])
+
+    weight = models.FloatField(
+        validators=[MinValueValidator(0.1), MaxValueValidator(1000)]
+    )
+
     price = models.PositiveIntegerField(validators=[MinValueValidator(1)])
+    delivery_price = models.PositiveIntegerField(
+        validators=[MinValueValidator(1)], null=True, default=None
+    )
+
     package_type = models.ForeignKey(PackageType, on_delete=models.PROTECT)
     owner_session = models.ForeignKey(Session, on_delete=models.CASCADE)
 
