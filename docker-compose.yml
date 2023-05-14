@@ -16,8 +16,7 @@ services:
 
   db:
     image: mysql:latest
-    volumes:
-      - mysql_storage:/var/lib/mysql
+    restart: always
     environment:
       MYSQL_ROOT_PASSWORD: super-secret
       MYSQL_DATABASE: ra-delta-db
@@ -25,6 +24,8 @@ services:
       MYSQL_PASSWORD: secret
     ports:
       - "3306:3306"
+    volumes:
+      - mysql_storage:/var/lib/mysql
 
 volumes:
   mysql_storage:
