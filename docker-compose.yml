@@ -1,20 +1,23 @@
 version: '3'
 
 services:
-  web:
+  django:
     build: .
     command: sh -c "../entrypoint.sh"
+    volumes:
+      - apps:/usr/src/django
     environment:
-      MYSQL_HOST: db
+      MYSQL_HOST: mysql
       MYSQL_DATABASE: ra-delta-db
       MYSQL_USER: user
       MYSQL_PASSWORD: secret
     ports:
       - "8000:8000"
     depends_on:
-      - db
+      - mysql
+      - redis
 
-  db:
+  mysql:
     image: mysql:latest
     restart: always
     environment:
@@ -27,5 +30,36 @@ services:
     volumes:
       - mysql_storage:/var/lib/mysql
 
+  redis:
+    image: redis
+    ports:
+      - "6379:6379"
+    restart: always
+
+  celery-worker:
+    build: .
+    restart: always
+    command: celery -A api worker -l info
+    volumes:
+      - apps:/usr/src/django
+    environment:
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+    depends_on:
+      - django
+
+  celery-beat:
+    build: .
+    restart: always
+    command: celery -A api beat -l info
+    volumes:
+      - apps:/usr/src/django
+    environment:
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+    depends_on:
+      - django
+
 volumes:
   mysql_storage:
+  apps:
