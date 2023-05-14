@@ -44,7 +44,7 @@ class PackageSerializer(serializers.ModelSerializer):
         # I hardcoded this because I don't want to overload the model
         # with foreign keys. We can create UnitModel and CurrencyModel
         # in the future...
-        package['weight_unit'] = 'gram'
+        package['weight_unit'] = 'kg'
         package['price_currency'] = 'usd'
         package['delivery_currency'] = 'rub'
 
