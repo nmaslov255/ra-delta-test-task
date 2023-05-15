@@ -2,18 +2,22 @@ from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.contrib.sessions.models import Session
 
-from .form import validate_name
+from .validators import raise_for_invalide_name
 
 
 class PackageType(models.Model):
-    name = models.CharField(max_length=255, validators=[validate_name])
+    name = models.CharField(
+        max_length=255, validators=[raise_for_invalide_name]
+    )
 
     def __str__(self):
         return self.name
 
 
 class Package(models.Model):
-    name = models.CharField(max_length=255, validators=[validate_name])
+    name = models.CharField(
+        max_length=255, validators=[raise_for_invalide_name]
+    )
 
     weight = models.FloatField(
         validators=[MinValueValidator(0.1), MaxValueValidator(1000)]
