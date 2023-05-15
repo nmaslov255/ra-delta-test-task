@@ -45,6 +45,10 @@ services:
     environment:
       REDIS_HOST: redis
       REDIS_PORT: 6379
+      MYSQL_HOST: mysql
+      MYSQL_DATABASE: ra-delta-db
+      MYSQL_USER: user
+      MYSQL_PASSWORD: secret
     depends_on:
       - django
 
