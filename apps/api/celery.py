@@ -12,6 +12,6 @@ app.autodiscover_tasks()
 app.conf.beat_schedule = {
     'every': {
         'task': 'api.tasks.fetch_rub_to_usd_exchange_rate',
-        'schedule': 60*5,  # 5 minutes
+        'schedule': 60*60,  # every 1 hour
     },
 }

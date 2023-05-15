@@ -19,14 +19,14 @@ class Migration(migrations.Migration):
             name='PackageType',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=255, validators=[api.validators.validate_name])),
+                ('name', models.CharField(max_length=255, validators=[api.validators.raise_for_invalide_name])),
             ],
         ),
         migrations.CreateModel(
             name='Package',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=255, validators=[api.validators.validate_name])),
+                ('name', models.CharField(max_length=255, validators=[api.validators.raise_for_invalide_name])),
                 ('weight', models.FloatField(validators=[django.core.validators.MinValueValidator(0.1), django.core.validators.MaxValueValidator(1000)])),
                 ('price', models.PositiveIntegerField(validators=[django.core.validators.MinValueValidator(1)])),
                 ('delivery_price', models.PositiveIntegerField(default=None, null=True, validators=[django.core.validators.MinValueValidator(1)])),
