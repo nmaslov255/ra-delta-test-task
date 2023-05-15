@@ -4,10 +4,6 @@ from requests.exceptions import HTTPError
 from .exceptions import CurrencyNotFound
 from .validators import raise_for_invalide_cbr_json
 
-# TODO: Remove celery logger when django logger will be added
-from celery.utils.log import get_task_logger
-logger = get_task_logger(__name__)
-
 
 def fetch_rub_exchange_rate(target_ticker: str) -> float:
     """Return value of the target currency in rubles
@@ -38,23 +34,3 @@ def fetch_rub_exchange_rate(target_ticker: str) -> float:
     if not currency:
         raise CurrencyNotFound(target_ticker)
     return currency.get('Value')
-
-def get_rub_exchange_rate_or_none(ticker: str):
-    """Exception wrapper for fetch_rub_exchange_rate
-
-    Args:
-        target_ticker (str): Currency ticker like USD, GBP, etc...
-
-    Returns:
-        float: Value of targer currency ticker
-    """
-    try:
-        return fetch_rub_exchange_rate('USD')
-    except HTTPError as e:
-        logger.error('HTTPError when try to fetch usd exchange rate')
-    except Exception as e:
-        logger.error(
-            f'Unexpected exception when try to fetch usd exchange rate: {e}'
-        )
-    finally:
-        return None
