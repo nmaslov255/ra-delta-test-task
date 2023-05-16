@@ -5,14 +5,19 @@ services:
     build: .
     command: sh -c "../entrypoint.sh"
     volumes:
-      - apps:/usr/src/django
+      - django_storage:/usr/src/django
     environment:
+      DJANGO_DEBUG: ${DJANGO_DEBUG}
+      DJANGO_SECRET_KEY: ${DJANGO_SECRET_KEY}
+      DJANGO_TIME_ZONE: ${DJANGO_TIME_ZONE}
+      DJANGO_PORT: ${DJANGO_PORT}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
       MYSQL_HOST: mysql
-      MYSQL_DATABASE: ra-delta-db
-      MYSQL_USER: user
-      MYSQL_PASSWORD: secret
+      MYSQL_PORT: ${MYSQL_PORT}
     ports:
-      - "8000:8000"
+      - "${DJANGO_PORT}:${DJANGO_PORT}"
     depends_on:
       - mysql
       - redis
@@ -21,19 +26,19 @@ services:
     image: mysql:latest
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: super-secret
-      MYSQL_DATABASE: ra-delta-db
-      MYSQL_USER: user
-      MYSQL_PASSWORD: secret
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
     ports:
-      - "3306:3306"
+      - "${MYSQL_PORT}:${MYSQL_PORT}"
     volumes:
       - mysql_storage:/var/lib/mysql
 
   redis:
     image: redis
     ports:
-      - "6379:6379"
+      - "${REDIS_PORT}:${REDIS_PORT}"
     restart: always
 
   celery-worker:
@@ -41,14 +46,14 @@ services:
     restart: always
     command: celery -A api worker -l info
     volumes:
-      - apps:/usr/src/django
+      - django_storage:/usr/src/django
     environment:
-      REDIS_HOST: redis
-      REDIS_PORT: 6379
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
       MYSQL_HOST: mysql
-      MYSQL_DATABASE: ra-delta-db
-      MYSQL_USER: user
-      MYSQL_PASSWORD: secret
+      REDIS_HOST: redis
+      REDIS_PORT: ${REDIS_PORT}
     depends_on:
       - django
 
@@ -57,13 +62,13 @@ services:
     restart: always
     command: celery -A api beat -l info
     volumes:
-      - apps:/usr/src/django
+      - django_storage:/usr/src/django
     environment:
       REDIS_HOST: redis
-      REDIS_PORT: 6379
+      REDIS_PORT: ${REDIS_PORT}
     depends_on:
       - django
 
 volumes:
   mysql_storage:
-  apps:
+  django_storage:

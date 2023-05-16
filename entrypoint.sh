@@ -7,4 +7,4 @@ done
 python manage.py migrate
 python manage.py collectstatic --noinput
 
-exec gunicorn --bind 0.0.0.0:8000 apps.wsgi
+exec gunicorn --bind 0.0.0.0:$DJANGO_PORT apps.wsgi

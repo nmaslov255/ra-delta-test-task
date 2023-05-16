@@ -21,10 +21,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-wf8^o*6zw7kv697mu%f#e_y-r4rjg5#h*#%q@*qsn-+l_nl7w1'
+SECRET_KEY = getenv('DJANGO_SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = getenv('DJANGO_DEBUG')
 
 ALLOWED_HOSTS = ['127.0.0.1']
 
@@ -32,7 +32,6 @@ ALLOWED_HOSTS = ['127.0.0.1']
 # Application definition
 
 INSTALLED_APPS = [
-    'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -83,10 +82,11 @@ WSGI_APPLICATION = 'apps.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'HOST': getenv('MYSQL_HOST'),
         'NAME': getenv('MYSQL_DATABASE'),
         'USER': getenv('MYSQL_USER'),
         'PASSWORD': getenv('MYSQL_PASSWORD'),
+        'HOST': getenv('MYSQL_HOST'),
+        'PORT': getenv('MYSQL_PORT')
     }
 
 }
@@ -141,7 +141,7 @@ LOGGING = {
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'Europe/Moscow'
+TIME_ZONE = getenv('DJANGO_TIME_ZONE')
 
 USE_I18N = True
 
