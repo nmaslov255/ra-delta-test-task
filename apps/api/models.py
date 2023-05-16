@@ -24,10 +24,10 @@ class Package(models.Model):
     )
 
     price = models.PositiveIntegerField(
-        validators=[MinValueValidator(1), MaxValueValidator(4294967295)]
+        validators=[MinValueValidator(1), MaxValueValidator(1000000)]
     )
     delivery_price = models.PositiveIntegerField(
-        validators=[MinValueValidator(1), MaxValueValidator(4294967295)],
+        validators=[MinValueValidator(1), MaxValueValidator(1000000000)],
         null=True, default=None
     )
 
