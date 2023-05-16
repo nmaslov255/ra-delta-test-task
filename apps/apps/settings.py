@@ -24,7 +24,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = getenv('DJANGO_SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = getenv('DJANGO_DEBUG')
+DEBUG = bool(getenv('DJANGO_DEBUG'))
 
 ALLOWED_HOSTS = ['127.0.0.1']
 
@@ -86,7 +86,10 @@ DATABASES = {
         'USER': getenv('MYSQL_USER'),
         'PASSWORD': getenv('MYSQL_PASSWORD'),
         'HOST': getenv('MYSQL_HOST'),
-        'PORT': getenv('MYSQL_PORT')
+        'PORT': getenv('MYSQL_PORT'),
+        'TEST': {
+            'NAME': f'test_{getenv("MYSQL_DATABASE")}',
+        },
     }
 
 }
