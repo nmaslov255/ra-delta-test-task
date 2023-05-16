@@ -13,7 +13,7 @@ logger = get_task_logger(__name__)
 
 
 @app.task
-def calculate_delivery_prices():
+def calculate_delivery_prices() -> None:
     """Celery task that update deliver_price for unprocessed packages"""
     usd_rub_pair = cache.get('usd_rub_pair')
 
