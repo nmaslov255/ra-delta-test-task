@@ -1,10 +1,12 @@
 from celery.utils.log import get_task_logger
-from django.db.models import F
 from django.core.cache import cache
+from django.db.models import F
+from apps.settings import MAX_USD_RUB_EXCHANGE_RATE
 
 from .celery import app
 from .models import Package
-from .utils import fetch_rub_exchange_rate
+from .utils import fetch_rub_exchange_rate, calculate_delivery_price
+from .exceptions import USDExchangeRateIsTooHigh
 
 
 logger = get_task_logger(__name__)
@@ -19,8 +21,13 @@ def calculate_delivery_prices():
         usd_rub_pair = fetch_rub_exchange_rate('USD')
         cache.set('usd_rub_pair', usd_rub_pair)
 
+    if usd_rub_pair > MAX_USD_RUB_EXCHANGE_RATE:
+        raise USDExchangeRateIsTooHigh(usd_rub_pair)
+
     rows_updated = Package.objects.filter(delivery_price=None).update(
-        delivery_price=(F('weight')*0.5*F('price')*0.01)*usd_rub_pair
+        delivery_price=calculate_delivery_price(
+            F('weight'), F('price'), usd_rub_pair
+        )
     )
 
     logger.info(f'Succesfully updated {rows_updated} package rows')

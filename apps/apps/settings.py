@@ -162,3 +162,9 @@ CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TIMEZONE = TIME_ZONE
+
+# Maximum values for models.package fields
+MAX_PACKAGE_WEIGHT = 200
+MAX_PACKAGE_PRICE = 1000000
+# This field uses in models.package.delivery_price
+MAX_USD_RUB_EXCHANGE_RATE = 1000
