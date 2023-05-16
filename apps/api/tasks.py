@@ -1,12 +1,12 @@
 from celery.utils.log import get_task_logger
 from django.core.cache import cache
 from django.db.models import F
-from apps.settings import MAX_USD_RUB_EXCHANGE_RATE
 
 from .celery import app
 from .models import Package
 from .utils import fetch_rub_exchange_rate, calculate_delivery_price
 from .exceptions import USDExchangeRateIsTooHigh
+from apps.settings import MAX_USD_RUB_EXCHANGE_RATE
 
 
 logger = get_task_logger(__name__)

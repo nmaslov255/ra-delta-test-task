@@ -1,4 +1,8 @@
+import logging
 from rest_framework import permissions
+
+
+logger = logging.getLogger('apps.api')
 
 
 class IsSessionOwner(permissions.BasePermission):
@@ -7,8 +11,19 @@ class IsSessionOwner(permissions.BasePermission):
     """
 
     def has_object_permission(self, request, view, obj):
-        try:
-            return str(obj.owner_session) == request.session.session_key
-        except AttributeError:
-            # TODO: add logs errro
+        client_session = request.session.session_key
+        object_session = str(obj.owner_session)
+
+        if client_session != object_session:
+            ip = request.META.get("REMOTE_ADDR")
+            path = request.META.get("PATH_INFO")
+
+            message = (
+                f'"{request.method} {path}" Client requested resource '
+                f'without permissions (session={client_session}, ip={ip})'
+            )
+
+            logger.error(message)
+
             return False
+        return True

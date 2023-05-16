@@ -1,4 +1,5 @@
-from django.shortcuts import render
+import logging
+
 from rest_framework import generics
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.decorators import permission_classes
@@ -10,6 +11,9 @@ from .filters import PackageFilter
 from .serializers import PackageSerializer, PackageTypeSerializer
 from .permissions import IsSessionOwner
 from .exceptions import SessionNotCreated
+
+
+logger = logging.getLogger('apps.api')
 
 
 class PackagePagination(PageNumberPagination):
@@ -35,8 +39,11 @@ class PackageListFilter(generics.ListAPIView):
         session_key = self.request.session.session_key
 
         if not session_key:
+            logger.critical('Session was not created')
             raise SessionNotCreated()
 
+        # TODO: try to filter session owner by drf permissions
+        # TODO: order queryset by django-filters
         return queryset.filter(owner_session=session_key).order_by('-pk')
 
 

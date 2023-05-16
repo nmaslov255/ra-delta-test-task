@@ -110,6 +110,31 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+# See logging docs here
+# https://docs.djangoproject.com/en/4.2/topics/logging/#formatters
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {
+        "api": {
+            "format": '[{asctime}] {levelname}: api/{module}.py | {message}',
+            "datefmt": "%d/%b/%Y %H:%M:%S",
+            "style": "{",
+        },
+    },
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+            "formatter": "api",
+        },
+    },
+    "loggers": {
+        "apps.api": {
+            "handlers": ["console"],
+            "level": "INFO",
+        },
+    }
+}
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
