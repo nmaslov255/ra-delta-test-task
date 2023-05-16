@@ -41,6 +41,9 @@ class PackageSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         package = super().to_representation(instance)
 
+        if package['delivery_price'] is None:
+            package['delivery_price'] = 'Not calculated'
+
         # I hardcoded this because I don't want to overload the model
         # with foreign keys. We can create UnitModel and CurrencyModel
         # in the future...
