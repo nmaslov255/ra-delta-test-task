@@ -5,7 +5,6 @@ from rest_framework.pagination import PageNumberPagination
 from rest_framework.decorators import permission_classes
 from django_filters.rest_framework import DjangoFilterBackend
 
-
 from .models import Package, PackageType
 from .filters import PackageFilter
 from .serializers import PackageSerializer, PackageTypeSerializer

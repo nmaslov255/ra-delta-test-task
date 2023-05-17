@@ -31,17 +31,13 @@ class TestApiValidators(TestCase):
 
 
 class TestApiCelaryTasks(APITestCase):
-    def setUp(self):
-        self.url = '/api/package/'
-        self.data = {
-            "name": "test",
-            "weight": 20,
-            "price": 100,
-            "package_type": 1
-        }
-
     def test_calculate_delivery_prices(self):
-        self.client.post(self.url, self.data)
+        self.client.post('/api/package/', {
+            "name": "test",
+            "weight": 1,
+            "price": 1,
+            "package_type": 1
+        })
 
         self.assertEqual(Package.objects.count(), 1)
         self.assertIsNone(Package.objects.get().delivery_price)
@@ -50,21 +46,19 @@ class TestApiCelaryTasks(APITestCase):
 
 
 class TestApiPackage(APITestCase):
-    def setUp(self):
-        self.url = '/api/package/'
-        self.data = {
-            "name": "test",
-            "weight": 20,
-            "price": 100,
-            "package_type": 1
-        }
-
     def test_create_package(self):
-        response = self.client.post(self.url, self.data)
+        response = self.client.post('/api/package/', {
+            "name": "test",
+            "weight": 1,
+            "price": 1,
+            "package_type": 1
+        })
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
         created_package = response.json()
+        self.assertIsInstance(created_package.get('pk'), int)
+
         self.assertEqual(
             created_package.get('delivery_price'), 'Not calculated'
         )
@@ -83,8 +77,11 @@ class TestApiPackages(APITestCase):
             })
 
     def test_get_packages(self):
-        response = self.client.get(f'{self.path}').json()
-        self.assertEqual(len(response.get('results')), 10)
+        response = self.client.get(f'{self.path}')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        results = response.json().get('results')
+        self.assertEqual(len(results), 10)
 
     def test_get_packages_with_filters(self):
         response = self.client.get(f'{self.path}?page_size=5').json()
@@ -102,4 +99,29 @@ class TestApiPackages(APITestCase):
         self.assertEqual(len(response.get('results')), 9)
 
     def test_get_packages_by_session(self):
+        pass
+
+
+class TestApiPackageTypes(APITestCase):
+    def test_get_package_types(self):
+        response = self.client.get('/api/package/types/')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.json()), 3)
+
+
+class TestApiPackageById(APITestCase):
+    def test_get_package_by_id(self):
+        response = self.client.post('/api/package/', {
+            "name": "test",
+            "weight": 5,
+            "price": 10,
+            "package_type": 1
+        })
+
+        pk = response.json().get('pk')
+        response = self.client.get(f'/api/package/{pk}/')
+        
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_get_package_by_session(self):
         pass
