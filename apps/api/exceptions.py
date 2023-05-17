@@ -15,7 +15,7 @@ class CurrencyNotFound(Exception):
 class USDExchangeRateIsTooHigh(Exception):
     def __init__(self, value):
         error_msg = (
-             "The USD/RUB exchange rate is higher then "
+            "The USD/RUB exchange rate is higher then "
             f"maximum rate ({value} > {MAX_USD_RUB_EXCHANGE_RATE})"
         )
         super().__init__(error_msg)

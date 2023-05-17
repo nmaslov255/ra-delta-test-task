@@ -1,5 +1,4 @@
 import requests
-from requests.exceptions import HTTPError
 
 from .exceptions import CurrencyNotFound
 from .validators import raise_for_invalide_cbr_json
@@ -34,6 +33,7 @@ def fetch_rub_exchange_rate(target_ticker: str) -> float:
     if not currency:
         raise CurrencyNotFound(target_ticker)
     return currency.get('Value')
+
 
 def calculate_delivery_price(
     weight: float, price: int, usd_price: float

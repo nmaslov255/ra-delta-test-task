@@ -1,5 +1,4 @@
 from django.test import TestCase
-from django.urls import reverse
 
 from rest_framework.test import APITestCase
 from rest_framework import status
@@ -42,12 +41,13 @@ class TestApiCelaryTasks(APITestCase):
         }
 
     def test_calculate_delivery_prices(self):
-        response = self.client.post(self.url, self.data)
+        self.client.post(self.url, self.data)
 
         self.assertEqual(Package.objects.count(), 1)
         self.assertIsNone(Package.objects.get().delivery_price)
         self.assertIsNone(calculate_delivery_prices())
         self.assertIsNotNone(Package.objects.get().delivery_price)
+
 
 class TestApiPackage(APITestCase):
     def setUp(self):
@@ -69,33 +69,37 @@ class TestApiPackage(APITestCase):
             created_package.get('delivery_price'), 'Not calculated'
         )
 
+
 class TestApiPackages(APITestCase):
-    def test_get_packages(self):
+    def setUp(self):
+        self.path = '/api/packages/'
+
         for idx in range(27):
             self.client.post('/api/package/', {
                 'name': 'test',
                 'weight': 1,
                 'price': 1,
-                'package_type': idx%3+1
+                'package_type': (idx % 3)+1
             })
 
-        path = '/api/packages/'
-        response = self.client.get(f'{path}').json()
+    def test_get_packages(self):
+        response = self.client.get(f'{self.path}').json()
         self.assertEqual(len(response.get('results')), 10)
 
-        response = self.client.get(f'{path}?page_size=5').json()
+    def test_get_packages_with_filters(self):
+        response = self.client.get(f'{self.path}?page_size=5').json()
         self.assertEqual(len(response.get('results')), 5)
 
-        response = self.client.get(f'{path}?page=3').json()
+        response = self.client.get(f'{self.path}?page=3').json()
         self.assertEqual(len(response.get('results')), 7)
 
-        response = self.client.get(f'{path}?package_type_id=1').json()
+        response = self.client.get(f'{self.path}?type_id=1').json()
         self.assertEqual(len(response.get('results')), 9)
 
         type_id = PackageType.objects.first()
         Package.objects.filter(package_type=type_id).update(delivery_price=5)
-        response = self.client.get(f'{path}?is_processed=1').json()
+        response = self.client.get(f'{self.path}?is_processed=1').json()
         self.assertEqual(len(response.get('results')), 9)
 
-        response = self.client.get(f'{path}?is_processed=1').json()
-        self.assertEqual(len(response.get('results')), 9)
+    def test_get_packages_by_session(self):
+        pass

@@ -1,5 +1,4 @@
 from django.core.management import BaseCommand
-from django.core.cache import cache
 
 from api.tasks import calculate_delivery_prices
 

@@ -22,6 +22,7 @@ def raise_for_invalide_name(value: str) -> NoReturn:
             f"Field cannot contain: {', '.join(matched_chars)}"
         )
 
+
 def raise_for_invalide_cbr_json(json: dict) -> NoReturn:
     """Validate json schema for www.cbr-xml-daily.ru/daily_json.js
 
